@@ -1,16 +1,13 @@
-# book_store_nodejs
+# Book Store Custom Back-end with Node.js
 
-A new Flutter project.
+For this project, I have used a back-end that I made with Node.js
 
-## Getting Started
+## Features of this project
+- Create new book in the Back-end.
+- Read all the books from the Back-end
+- Update an existing book in the Back-end.
+- Delete a book from the Back-end.
+- Both Light and Dark mode can be enabled.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## App Outlook
+![dark-portrait](https://github.com/user-attachments/assets/16786787-9ff6-419d-8eb4-f5e6a19ca6cb)![light-portrait](https://github.com/user-attachments/assets/908e550a-aba8-4c26-be54-fa3c5fd003ed)
