@@ -16,6 +16,8 @@ class _HomePageState extends State<HomePage> {
   bool _isEditMode = false;
   BookModel? _selectedBook;
 
+  bool _isDarkMode = false;
+
   TextEditingController _titleController = TextEditingController();
   TextEditingController _authorController = TextEditingController();
   TextEditingController _yearController = TextEditingController();
@@ -43,13 +45,26 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _isDarkMode ? Colors.black12 : Colors.white,
       appBar: AppBar(
+        elevation: 3,
         title: Text(
-          "Books",
-          style: TextStyle(color: Colors.white),
+          "Books to Buy",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: _isDarkMode ? Colors.black : Colors.blue,
+        actions: [
+          IconButton(
+              onPressed: () {
+                _isDarkMode = !_isDarkMode;
+                setState(() {});
+              },
+              icon: Icon(
+                _isDarkMode ? Icons.light_mode : Icons.dark_mode_outlined,
+                color: _isDarkMode ? Colors.yellow : Colors.white,
+              )),
+        ],
       ),
       body: _books == null
           ? const Center(
@@ -63,32 +78,58 @@ class _HomePageState extends State<HomePage> {
                           child: Text("No Books"),
                         )
                       : ListView.builder(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 15, horizontal: 5),
                           itemCount: _books!.length,
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
-                            return ListTile(
-                              onTap: () {
-                                _selectedBook = _books![index];
+                            return Column(
+                              children: [
+                                ListTile(
+                                  onTap: () {
+                                    _selectedBook = _books![index];
 
-                                _titleController.text = _selectedBook!.title;
-                                _authorController.text = _selectedBook!.author;
-                                _yearController.text = _selectedBook!.year.toString();
-                                _priceController.text = _selectedBook!.price.toString();
-                              },
-                              title: Text(
-                                  "${_books![index].title} by ${_books![index].author}"),
-                              subtitle:
-                                  Text("Released: ${_books![index].year}"),
-                              trailing: IconButton(
-                                  onPressed: () {
-                                    _graphQLService.deleteBook(
-                                        id: _books![index].id);
-                                    _load();
+                                    _titleController.text =
+                                        _selectedBook!.title;
+                                    _authorController.text =
+                                        _selectedBook!.author;
+                                    _yearController.text =
+                                        _selectedBook!.year.toString();
+                                    _priceController.text =
+                                        _selectedBook!.price.toString();
                                   },
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  )),
+                                  title: Text(
+                                    "${_books![index].title} by ${_books![index].author} - released in ${_books![index].year}",
+                                    style: TextStyle(
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text(
+                                    "Price: \$${_books![index].price}",
+                                    style: TextStyle(
+                                        color: _isDarkMode
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                  trailing: IconButton(
+                                      onPressed: () {
+                                        _graphQLService.deleteBook(
+                                            id: _books![index].id);
+                                        _load();
+                                      },
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: _isDarkMode
+                                            ? Colors.yellow
+                                            : Colors.red,
+                                      )),
+                                ),
+                                Divider(
+                                  thickness: 2,
+                                ),
+                              ],
                             );
                           },
                         ),
@@ -98,11 +139,12 @@ class _HomePageState extends State<HomePage> {
                     IconButton(
                       onPressed: () {
                         _isEditMode = !_isEditMode;
-                        setState(() {
-
-                        });
+                        setState(() {});
                       },
-                      icon: Icon(_isEditMode ? Icons.edit : Icons.add),
+                      icon: Icon(
+                        _isEditMode ? Icons.edit : Icons.add,
+                        color: _isDarkMode ? Colors.red : Colors.black,
+                      ),
                     ),
                     Expanded(
                       child: Column(
@@ -112,7 +154,17 @@ class _HomePageState extends State<HomePage> {
                                 const EdgeInsets.symmetric(horizontal: 15.0),
                             child: TextField(
                               controller: _titleController,
-                              decoration: InputDecoration(hintText: "Title"),
+                              style: TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+                              decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: _isDarkMode ? Colors.yellow : Colors.purple)),
+                                  border: OutlineInputBorder(),
+                                  hintText: "Title",
+                                  hintStyle: TextStyle(
+                                      color: _isDarkMode
+                                          ? Colors.white38
+                                          : Colors.black54)),
                             ),
                           ),
                           Padding(
@@ -120,48 +172,89 @@ class _HomePageState extends State<HomePage> {
                                 const EdgeInsets.symmetric(horizontal: 15.0),
                             child: TextField(
                               controller: _authorController,
-                              decoration: InputDecoration(hintText: "Author"),
+                              style: TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+                              decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: _isDarkMode ? Colors.yellow : Colors.purple)),
+                                  border: OutlineInputBorder(),
+                                  hintText: "Author",
+                                  hintStyle: TextStyle(
+                                      color: _isDarkMode
+                                          ? Colors.white38
+                                          : Colors.black54)),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 15.0),
-                            child: TextField(
-                              controller: _yearController,
-                              decoration: InputDecoration(hintText: "Year"),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 15.0),
-                            child: TextField(
-                              controller: _priceController,
-                              decoration: InputDecoration(hintText: "Price"),
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 15.0, bottom: 15),
+                                  child: TextField(
+                                    controller: _yearController,
+                                    style: TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+                                    decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: _isDarkMode ? Colors.yellow : Colors.purple)),
+                                        border: OutlineInputBorder(),
+                                        hintText: "Year",
+                                        hintStyle: TextStyle(
+                                            color: _isDarkMode
+                                                ? Colors.white38
+                                                : Colors.black54)),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(right: 15.0, bottom: 15),
+                                  child: TextField(
+                                    controller: _priceController,
+                                    style: TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+                                    decoration: InputDecoration(
+                                        focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(color: _isDarkMode ? Colors.yellow : Colors.purple)),
+                                        border: OutlineInputBorder(),
+                                        hintText: "Price",
+                                        hintStyle: TextStyle(
+                                            color: _isDarkMode
+                                                ? Colors.white38
+                                                : Colors.black54)),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
                     IconButton(
-                        onPressed: () async {
-                          if(_isEditMode) {
-                            await _graphQLService.updateBook(
+                      onPressed: () async {
+                        if (_isEditMode) {
+                          await _graphQLService.updateBook(
                               id: _selectedBook!.id,
-                                title: _titleController.text,
-                                author: _authorController.text,
-                                year: int.parse(_yearController.text),
-                                price: int.parse(_priceController.text));
-                          }else {
-                            await _graphQLService.createBook(
-                                title: _titleController.text,
-                                author: _authorController.text,
-                                year: int.parse(_yearController.text),
-                                price: int.parse(_priceController.text));
-                          }
-                          _load();
-                          _clear();
-                        },
-                        icon: Icon(Icons.send),
+                              title: _titleController.text,
+                              author: _authorController.text,
+                              year: int.parse(_yearController.text),
+                              price: int.parse(_priceController.text));
+                        } else {
+                          await _graphQLService.createBook(
+                              title: _titleController.text,
+                              author: _authorController.text,
+                              year: int.parse(_yearController.text),
+                              price: int.parse(_priceController.text));
+                        }
+                        _load();
+                        _clear();
+                      },
+                      icon: Icon(
+                        Icons.send,
+                        color: _isDarkMode ? Colors.green : Colors.black,
+                      ),
                     ),
                   ],
                 )
